@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reelkeep — save the clip</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <div class="grain"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">
+        <span class="sprocket"></span><span class="sprocket"></span><span class="sprocket"></span>
+      </span>
+      Reelkeep
+    </div>
+    </header>
+
+  <main class="stage">
+    <section class="hero">
+      <p class="eyebrow">paste a link → get a file</p>
+      <h1>Pull a clip off the feed<br>and keep it for good.</h1>
+      <p class="sub">Works with YouTube and Instagram links. Runs entirely on your own computer — nothing is uploaded anywhere.</p>
+    </section>
+
+    <section class="deck">
+      <div class="film-edge left">
+        <span class="hole"></span><span class="hole"></span><span class="hole"></span>
+        <span class="hole"></span><span class="hole"></span><span class="hole"></span>
+      </div>
+
+      <div class="card">
+        <label for="url" class="field-label">Video link</label>
+        <div class="input-row">
+          <input id="url" type="text" placeholder="https://www.youtube.com/watch?v=… or https://www.instagram.com/reel/…" autocomplete="off">
+          <button id="previewBtn" class="btn-ghost">Look up</button>
+        </div>
+
+        <div id="preview" class="preview hidden">
+          <img id="previewThumb" alt="">
+          <div class="preview-meta">
+            <p id="previewTitle" class="preview-title">—</p>
+            <p id="previewSub" class="preview-sub">—</p>
+          </div>
+        </div>
+
+        <div class="format-row">
+          <span class="field-label">Save as</span>
+          <div class="toggle" id="formatToggle">
+            <button type="button" class="toggle-opt active" data-format="video">MP4 video</button>
+            <button type="button" class="toggle-opt" data-format="audio">MP3 audio</button>
+          </div>
+        </div>
+
+        <button id="downloadBtn" class="btn-main">
+          <span class="btn-label">Download</span>
+          <span class="reel-spinner hidden" aria-hidden="true"></span>
+        </button>
+
+        <p id="status" class="status"></p>
+      </div>
+
+      <div class="film-edge right">
+        <span class="hole"></span><span class="hole"></span><span class="hole"></span>
+        <span class="hole"></span><span class="hole"></span><span class="hole"></span>
+      </div>
+    </section>
+
+    <section class="notes">
+      <div class="note">
+        <span class="note-tag">01</span>
+        <p>Only download videos you own, have permission to use, or that a creator has explicitly allowed you to save. Respect YouTube's and Instagram's terms of service and copyright law.</p>
+      </div>
+      <div class="note">
+        <span class="note-tag">02</span>
+        <p>Saved files land in the <code>downloads/</code> folder next to <code>app.py</code>, and are also offered straight to your browser's download bar.</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
