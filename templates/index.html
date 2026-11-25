@@ -62,6 +62,25 @@
           <span class="reel-spinner hidden" aria-hidden="true"></span>
         </button>
 
+        <div id="downloadProgress" class="download-progress hidden" aria-live="polite">
+          <div class="progress-heading">
+            <span id="progressMessage">Starting download…</span>
+            <span id="progressPercent">0%</span>
+          </div>
+          <div
+            id="progressTrack"
+            class="progress-track"
+            role="progressbar"
+            aria-label="Download progress"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            aria-valuenow="0"
+          >
+            <div id="progressFill" class="progress-fill"></div>
+          </div>
+          <p id="progressDetails" class="progress-details"></p>
+        </div>
+
         <p id="status" class="status"></p>
       </div>
 

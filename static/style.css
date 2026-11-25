@@ -285,6 +285,56 @@ html, body {
 }
 .reel-spinner.hidden { display: none; }
 
+.download-progress {
+  margin-top: 18px;
+  padding: 14px 15px;
+  border: 1px solid var(--hairline);
+  border-radius: 10px;
+  background: var(--ink-2);
+}
+.download-progress.hidden { display: none; }
+.progress-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--text);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+#progressPercent {
+  color: var(--teal);
+  font-family: 'JetBrains Mono', monospace;
+}
+.progress-track {
+  height: 8px;
+  margin-top: 11px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.09);
+}
+.progress-fill {
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--teal);
+  transition: width 0.35s ease;
+}
+.download-progress.indeterminate .progress-fill {
+  animation: progress-pulse 1.2s ease-in-out infinite alternate;
+}
+.progress-details {
+  min-height: 1em;
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+}
+
+@keyframes progress-pulse {
+  from { transform: translateX(-25%); }
+  to { transform: translateX(190%); }
+}
+
 @keyframes spin { to { transform: rotate(360deg); } }
 
 .status {
