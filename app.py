@@ -9,6 +9,7 @@ Then open: http://127.0.0.1:5000
 import os
 import uuid
 from pathlib import Path
+from urllib.parse import urlsplit
 
 from flask import Flask, render_template, request, jsonify, send_file
 import yt_dlp
@@ -26,17 +27,26 @@ ALLOWED_DOMAINS = ("youtube.com", "youtu.be", "instagram.com")
 # with, and yt-dlp will reuse those cookies — same as viewing the reel
 # normally in that browser. Leave as None if you don't need this.
 #
-# Options: "chrome", "edge", "firefox", "brave", "opera", "vivaldi", "safari"
-COOKIES_FROM_BROWSER = None  # e.g. "chrome"
+# Set REELKEEP_COOKIES_FROM_BROWSER to a browser name (for example "chrome")
+# when Instagram requires an authenticated session.
+COOKIES_FROM_BROWSER = os.environ.get("REELKEEP_COOKIES_FROM_BROWSER")
 
 
 def is_allowed_url(url: str) -> bool:
-    return bool(url) and any(domain in url for domain in ALLOWED_DOMAINS)
+    try:
+        parsed = urlsplit(url)
+        host = (parsed.hostname or "").lower().rstrip(".")
+    except ValueError:
+        return False
+    return (
+        parsed.scheme in {"http", "https"}
+        and any(host == domain or host.endswith("." + domain) for domain in ALLOWED_DOMAINS)
+    )
 
 
 def base_opts() -> dict:
     """Options shared by every yt-dlp call."""
-    opts = {"quiet": True, "noplaylist": True}
+    opts = {"quiet": True, "no_warnings": True, "noplaylist": True}
     if COOKIES_FROM_BROWSER:
         opts["cookiesfrombrowser"] = (COOKIES_FROM_BROWSER,)
     return opts
@@ -111,11 +121,21 @@ def download():
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             meta = ydl.extract_info(url, download=True)
-            filename = ydl.prepare_filename(meta)
+            # yt-dlp may change the extension after merging or post-processing.
+            # Resolve the actual output by this request's unique job prefix.
+            candidates = [
+                path for path in DOWNLOAD_DIR.glob(f"{job_id}_*") if path.is_file()
+            ]
             if fmt == "audio":
-                filename = str(Path(filename).with_suffix(".mp3"))
+                candidates = [path for path in candidates if path.suffix.lower() == ".mp3"]
+            if len(candidates) != 1:
+                raise FileNotFoundError("yt-dlp did not produce one downloadable output file")
+            filename = str(candidates[0])
     except Exception as exc:
-        return jsonify({"error": f"Download failed: {exc}"}), 400
+        message = str(exc)
+        if COOKIES_FROM_BROWSER and "cookie" in message.lower():
+            message += " Close the selected browser and confirm you are logged in."
+        return jsonify({"error": f"Download failed: {message}"}), 400
 
     if not os.path.exists(filename):
         return jsonify({"error": "Download failed: file was not created."}), 500

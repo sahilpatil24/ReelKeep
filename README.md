@@ -19,7 +19,7 @@ reelkeep/
 
 ## Prerequisites
 
-1. **Python 3.9+**
+1. **Python 3.11+** (required by current yt-dlp releases)
    Check with: `python3 --version`
    Get it from https://www.python.org/downloads/ if needed.
 
@@ -76,7 +76,7 @@ Then open **http://127.0.0.1:5000** in your browser.
 - yt-dlp is updated frequently to keep up with site changes. If downloads
   suddenly start failing, try `pip install -U yt-dlp` first.
 
-### Fixing "Instagram sent an empty media response"
+### Instagram login and cookies
 
 Instagram now blocks most requests that don't come from a logged-in
 browser session — this happens with any tool that talks to Instagram this
@@ -84,23 +84,28 @@ way, not just this app. The fix is to let yt-dlp reuse cookies from a
 browser on your computer that's already logged into Instagram:
 
 1. Log into instagram.com in Chrome (or Edge/Firefox/Brave) normally.
-2. Open `app.py` and change this line near the top:
-   ```python
-   COOKIES_FROM_BROWSER = None
+2. Set `REELKEEP_COOKIES_FROM_BROWSER` to that browser name before starting the app:
+   ```powershell
+   $env:REELKEEP_COOKIES_FROM_BROWSER = "chrome"
+   python app.py
    ```
-   to:
-   ```python
-   COOKIES_FROM_BROWSER = "chrome"   # or "edge", "firefox", "brave", etc.
-   ```
-3. **Close that browser completely** before running `python app.py` —
+   On macOS/Linux, use `REELKEEP_COOKIES_FROM_BROWSER=chrome python app.py`.
+3. **Close that browser completely** before starting the app —
    Chrome locks its cookie database while running, which can make yt-dlp
    fail to read it on Windows.
-4. Restart the app and try the link again.
+4. Restart the app and try the link again. Leave the variable unset for
+   public media that does not need a login.
 
 If it still fails after that, run `pip install -U yt-dlp` (Instagram's
 anti-bot measures change often and yt-dlp ships fixes frequently), and
 double check the reel is public and the URL loads fine in a private/
 incognito window.
+
+### Updating yt-dlp
+
+Install the supported current version with `pip install -U -r requirements.txt`.
+The YouTube and Instagram extractors change as those sites change, so an older
+installed yt-dlp can stop working even when the app code itself has not changed.
 
 ## Please use this responsibly
 
